@@ -3,8 +3,9 @@ import pandas as pd
 
 
 class Platform:
-    def __init__(self, data):
+    def __init__(self, data, factor=None):
         self.data = data
+        self.factor = factor
 
     def processor(self):
         pass
@@ -13,6 +14,6 @@ class Platform:
         pass
 
     def get_performance(self, factor):
-        pass
+        self.factor = factor
 
 
