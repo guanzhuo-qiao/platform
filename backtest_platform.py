@@ -39,10 +39,38 @@ class Platform:
             self.factor = factor
         assert len(self.quarterly_return) == len(self.factor)
 
+        fig = plt.figure(figsize=(8, 8))
+
+        # Monotonic Test
+        gr_arr = np.array(self.grouped_return).T
+        monotonic_graph = fig.add_subplot(1, 2, 1)
+        monotonic_graph.set_title('Monotonic Test')
+        for Q in gr_arr:
+            monotonic_graph.plot(Q)
+
+        #
+        plt.show()
 
 
 
-bp = Platform(monthly_return_file='stock_monthly_return.csv',
-              quarterly_return_file='')
-bp.summary()
+# bp = Platform(monthly_return_file='stock_monthly_return.csv',
+#               quarterly_return_file='')
+# bp.summary()
 
+fig = plt.figure(figsize=(8, 8))
+# Monotonic Test
+a = [[1,2,3,4,5],
+     [6,4,7,8,9],
+     [2,3,3,4,6],
+     [3,5,6,7,8],
+     [9,0,8,7,5],
+     [6,5,6,7,9],
+     [2,3,4,5,3]]
+gr_arr = np.array(a).T
+monotonic_graph = fig.add_subplot(1, 2, 1)
+monotonic_graph.set_title('Monotonic Test')
+
+for Q in gr_arr:
+    monotonic_graph.plot(Q)
+
+plt.show()
