@@ -1,18 +1,25 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 class Platform:
-    def __init__(self, data_file, factor=None):
-        self.data = pd.read_csv(data_file, index_col=0)
+    def __init__(self, monthly_return_file, quarterly_return_file, factor=None):
+
+        self.monthly_return = pd.read_csv(monthly_return_file, index_col=0)
+        self.quarterly_return = pd.read_csv(quarterly_return_file, index_col=0)
         self.factor = factor
-        self.quarterly_return = None
         self.grouped_return = None
+        self.init_processor()
 
-    def init_processor(self, num_of_month):  # get self.quarterly_return
+    def init_processor(self):
 
+        self.monthly_return.fillna(0)
+        self.quarterly_return.fillna(0)
+        self.factor.fillna(0)
 
     def group(self, N, ascending=True):
+
         self.grouped_return = pd.DataFrame(columns=range(N))
         for date, factors in self.factor.iterrows():
             ticker_list = list(factors.sort_values(ascending=ascending).index)
@@ -26,11 +33,16 @@ class Platform:
                 gr_row.append(self.quarterly_return.loc[date, grouped_tickers].mean())
             self.grouped_return = self.grouped_return.append([gr_row], ignore_index=True)
 
-    def get_performance(self, factor=None):
+    def summary(self, factor=None):
+
         if factor:
             self.factor = factor
         assert len(self.quarterly_return) == len(self.factor)
 
 
-mass = pd.read_csv('stock_monthly_return.csv', index_col=0)
-print(mass)
+
+
+bp = Platform(monthly_return_file='stock_monthly_return.csv',
+              quarterly_return_file='')
+bp.summary()
+
