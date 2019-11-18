@@ -13,7 +13,7 @@ def get_factor_table(keyword):
         symbol = file_name.split("_")[0]
         try:
             factor_data.loc[:,symbol] = file_content.loc[keyword,:][time_index]
-        except:
+        except KeyError:
             pass
     return factor_data
 
