@@ -39,7 +39,7 @@ class Platform:
             self.factor = factor
         assert len(self.quarterly_return) == len(self.factor)
 
-        fig = plt.figure(figsize=(8, 8))
+        fig = plt.figure(figsize=(10, 5))
 
         # Monotonic Test
         gr_arr = np.array(self.grouped_return).T
@@ -57,7 +57,7 @@ class Platform:
 #               quarterly_return_file='')
 # bp.summary()
 
-fig = plt.figure(figsize=(8, 8))
+fig = plt.figure(figsize=(10, 5))
 # Monotonic Test
 a = [[1,2,3,4,5],
      [6,4,7,8,9],
