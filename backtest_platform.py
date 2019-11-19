@@ -16,9 +16,9 @@ class Platform:
 
     def processor(self):
 
-        self.monthly_return.fillna(0)
-        self.quarterly_return.fillna(0)
-        self.factor.fillna(0)
+        self.monthly_return = self.monthly_return.fillna(0)
+        self.quarterly_return = self.quarterly_return.fillna(0)
+        self.factor = self.factor.fillna(0)
 
     def group(self, N, ascending=True):
 
@@ -54,6 +54,7 @@ class Platform:
                 tmp_r = stats.ttest_ind(gr_arr[i], gr_arr[j], equal_var=stats.levene(gr_arr[i], gr_arr[j]).pvalue > 0.1)
                 print(tmp_r)
                 T_test_res.append(tmp_r)
+        print()
 
         # Information Ratio
         print("Information Ratio:")
@@ -62,6 +63,7 @@ class Platform:
             ir = (r.mean() - SP500.mean()) / np.std(r - SP500)
             print(ir)
             info_ratio_res.append(ir)
+        print()
 
         # Sharpe Ratio
         print("Sharpe Ratio:")
@@ -70,9 +72,15 @@ class Platform:
             sr = (r.mean() - 0.0318) / np.std(r)
             print(sr)
             Sharpe_ratio_res.append(sr)
+        print()
 
         # Information Coefficient
-        #
+        print("Information Coefficient:")
+        info_coef_res = []
+        for i in range(len(self.factor) - 1):
+            ic = self.factor.iloc[i, :].corr(self.quarterly_return.iloc[i + 1, :])
+            print(ic)
+            info_coef_res.append(ic)
 
         fig = plt.figure(figsize=(10, 5))
 
@@ -88,10 +96,19 @@ class Platform:
             monotonic_graph.plot(Q)
 
         # Distribution Detection
-        #
+        distribution_graph = fig.add_subplot(1, 2, 2)
+        distribution_graph.set_title('Distribution Detection')
+        tmp = np.ravel(np.array(self.factor))
+        # remove the influence from NaN
+        tmp = tmp[tmp != 0]
+        # remove the outlier
+        tmp = tmp[abs(tmp) < 10]
+        bin_width = 1
+        nums = int(max(tmp) - min(tmp)) // bin_width
+        plt.hist(tmp, nums)
 
         plt.show()
-        return T_test_res, info_ratio_res, Sharpe_ratio_res
+        return T_test_res, info_ratio_res, Sharpe_ratio_res, info_coef_res
 
 
 bp = Platform(monthly_return_file='stock_monthly_return.csv',
