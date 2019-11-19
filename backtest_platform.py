@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import stats
 import pandas as pd
 import matplotlib.pyplot as plt
 from factor_generator import get_factor_table
@@ -42,41 +43,55 @@ class Platform:
 
         self.processor()
         self.group(group_num)
+        gr_arr = np.array(self.grouped_return).T
+        SP500 = np.array(self.quarterly_return.iloc[:, -1])
 
         # Student's t-test of mean return differential
-        #
+        print("Student's t-test of mean return differential:")
+        T_test_res = []
+        for i in range(group_num):
+            for j in range(i + 1, group_num):
+                tmp_r = stats.ttest_ind(gr_arr[i], gr_arr[j], equal_var=stats.levene(gr_arr[i], gr_arr[j]).pvalue > 0.1)
+                print(tmp_r)
+                T_test_res.append(tmp_r)
 
-        # IR
-        #
+        # Information Ratio
+        print("Information Ratio:")
+        info_ratio_res = []
+        for r in gr_arr:
+            ir = (r.mean() - SP500.mean()) / np.std(r - SP500)
+            print(ir)
+            info_ratio_res.append(ir)
 
-        # SR
-        #
+        # Sharpe Ratio
+        print("Sharpe Ratio:")
+        Sharpe_ratio_res = []
+        for r in gr_arr:
+            sr = (r.mean() - 0.0318) / np.std(r)
+            print(sr)
+            Sharpe_ratio_res.append(sr)
 
-        # IC
-        #
-
-        # Outlier Detection
+        # Information Coefficient
         #
 
         fig = plt.figure(figsize=(10, 5))
 
         # Monotonic Test
-        gr_arr = np.array(self.grouped_return).T
         monotonic_graph = fig.add_subplot(1, 2, 1)
         monotonic_graph.set_title('Monotonic Test')
         for Q in gr_arr:
-            # Standardize Q
+            # Outlier Detection and Standardization
             threshold = np.std(Q)
             Q = Q[abs(Q) < threshold]
             Q = (Q - Q.mean()) / (6 * Q.std())
             # Plot Q
             monotonic_graph.plot(Q)
 
+        # Distribution Detection
         #
 
-        #
         plt.show()
-
+        return T_test_res, info_ratio_res, Sharpe_ratio_res
 
 
 bp = Platform(monthly_return_file='stock_monthly_return.csv',
