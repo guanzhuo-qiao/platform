@@ -121,13 +121,16 @@ class Platform:
 
 def function_on_factor(x,y,z):
     return (x+y)/2+z
+# bp = Platform(monthly_return_file='stock_monthly_return.csv',
+#               quarterly_return_file='stock_quarterly_return.csv',
+#               factor_dict={"x":"roe","y":"roa","z":"free-cash-flow-per-share"},
+#               factor_combined_way=function_on_factor)
+# bp.summary(5)
 bp = Platform(monthly_return_file='stock_monthly_return.csv',
               quarterly_return_file='stock_quarterly_return.csv',
-              factor_dict={"x":"roe","y":"roa","z":"free-cash-flow-per-share"},
-              factor_combined_way=function_on_factor)
+              factor_dict={"x":"roe"},
+              factor_combined_way=None)
 bp.summary(5)
-
-
 # fig = plt.figure(figsize=(10, 5))
 # # Monotonic Test
 # a = [[1,2,3,4,5],
