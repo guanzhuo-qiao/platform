@@ -89,14 +89,19 @@ class Platform:
         # Monotonic Test
         monotonic_graph = fig.add_subplot(1, 2, 1)
         monotonic_graph.set_title('Monotonic Test')
+        # report_table = gr_arr[::]
+        # print(f"ahahha {report_table}")
+        count = 0
         for Q in gr_arr:
+            count+=1
             # Outlier Detection and Standardization
             threshold = np.std(Q)
-            Q = Q[abs(Q) < threshold]
-            Q = (Q - Q.mean()) / (6 * Q.std())
+            Q = Q[abs(Q) < 2*threshold]
+            # Q = (Q - Q.mean()) / (6 * Q.std())
             # Plot Q
-            monotonic_graph.plot(Q)
-
+            qq = (Q+1).cumprod()
+            monotonic_graph.plot(qq,label=f"factor{count}")
+        monotonic_graph.legend()
         # Distribution Detection
         distribution_graph = fig.add_subplot(1, 2, 2)
         distribution_graph.set_title('Distribution Detection')
