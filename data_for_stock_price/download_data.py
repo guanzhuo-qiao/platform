@@ -40,7 +40,7 @@ quarterly_return = pd.DataFrame()
 index = list(range(0, len(equitydata), 3))
 q_data = equitydata.iloc[index]
 
-res = (q_data - q_data.shift(1)) / q_data
+res = (q_data - q_data.shift(1)) / q_data.shift(1)
 
 res  = res.iloc[1:,:]
 

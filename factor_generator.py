@@ -17,6 +17,7 @@ def get_factor_table(keyword):
             factor_data.loc[:,symbol] = file_content.loc[keyword,:][time_index]
         except KeyError:
             pass
+    os.chdir(os.getcwd()[:-7])
     return factor_data
 
 if __name__=="__main__":

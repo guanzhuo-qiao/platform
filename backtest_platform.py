@@ -24,7 +24,8 @@ class Platform:
 
         self.grouped_return = pd.DataFrame(columns=range(N))
         for date, factors in self.factor.iterrows():
-            ticker_list = list(factors.sort_values(ascending=ascending).index)
+            rank_factor = factors.argsort()/factors.argsort().sum() # transfer to 0-1
+            ticker_list = list(rank_factor.sort_values(ascending=ascending).index)
             members = int(len(ticker_list) / N)
             gr_row = []
             for i in range(N):
@@ -32,7 +33,8 @@ class Platform:
                     grouped_tickers = ticker_list[i * members:]
                 else:
                     grouped_tickers = ticker_list[i * members:(i + 1) * members]
-                gr_row.append(self.quarterly_return.loc[date, grouped_tickers].mean())
+                weighted_return = self.quarterly_return.loc[date, grouped_tickers]@rank_factor[grouped_tickers]/rank_factor[grouped_tickers].sum()
+                gr_row.append(weighted_return)
             self.grouped_return = self.grouped_return.append([gr_row], ignore_index=True)
 
     def summary(self, group_num, factor_name=None):
@@ -69,7 +71,7 @@ class Platform:
         print("Sharpe Ratio:")
         Sharpe_ratio_res = []
         for r in gr_arr:
-            sr = (r.mean() - 0.0318) / np.std(r)
+            sr = (r.mean() - 0.0318/4) / np.std(r)
             print(sr)
             Sharpe_ratio_res.append(sr)
         print()
@@ -113,7 +115,7 @@ class Platform:
 
 bp = Platform(monthly_return_file='stock_monthly_return.csv',
               quarterly_return_file='stock_quarterly_return.csv')
-bp.summary(5, "free-cash-flow-per-share")
+bp.summary(5, "roe")
 
 
 # fig = plt.figure(figsize=(10, 5))
