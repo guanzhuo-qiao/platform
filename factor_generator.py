@@ -20,6 +20,19 @@ def get_factor_table(keyword):
     os.chdir(os.getcwd()[:-7])
     return factor_data
 
+
+def factor_function(func,factor_dic):
+    inner_dic = {}
+    for key,x in factor_dic.items():
+        inner_dic[key] = get_factor_table(x)
+    return func(**inner_dic)
+
 if __name__=="__main__":
     print(get_factor_table("free-cash-flow-per-share"))
+    print(get_factor_table("roe"))
+    dictionary = {"x":"free-cash-flow-per-share",
+                  "y":"roe"}
+    def f(x,y):
+        return x+y
+    print(factor_function(f,dictionary))
 

@@ -2,17 +2,19 @@ import numpy as np
 from scipy import stats
 import pandas as pd
 import matplotlib.pyplot as plt
-from factor_generator import get_factor_table
+from factor_generator import get_factor_table,factor_function
 
 
 class Platform:
-    def __init__(self, monthly_return_file, quarterly_return_file, factor_name=None):
+    def __init__(self, monthly_return_file, quarterly_return_file, factor_dict=None, factor_combined_way=None):
 
         self.monthly_return = pd.read_csv(monthly_return_file, index_col=0)
         self.quarterly_return = pd.read_csv(quarterly_return_file, index_col=0)
         self.grouped_return = None
-        if factor_name:
-            self.factor = get_factor_table(factor_name)
+        if factor_dict:
+            self.factor = get_factor_table(factor_dict["x"])
+        if factor_combined_way:
+            self.factor = factor_function(factor_combined_way,factor_dict)
 
     def processor(self):
 
@@ -37,10 +39,10 @@ class Platform:
                 gr_row.append(weighted_return)
             self.grouped_return = self.grouped_return.append([gr_row], ignore_index=True)
 
-    def summary(self, group_num, factor_name=None):
+    def summary(self, group_num):
 
-        if factor_name:
-            self.factor = get_factor_table(factor_name)
+        # if factor_name:
+        #     self.factor = get_factor_table(factor_name)
         assert len(self.quarterly_return) == len(self.factor)
 
         self.processor()
@@ -117,10 +119,13 @@ class Platform:
         plt.show()
         return T_test_res, info_ratio_res, Sharpe_ratio_res, info_coef_res
 
-
+def function_on_factor(x,y,z):
+    return (x+y)/2+z
 bp = Platform(monthly_return_file='stock_monthly_return.csv',
-              quarterly_return_file='stock_quarterly_return.csv')
-bp.summary(5, "roe")
+              quarterly_return_file='stock_quarterly_return.csv',
+              factor_dict={"x":"roe","y":"roa","z":"free-cash-flow-per-share"},
+              factor_combined_way=function_on_factor)
+bp.summary(5)
 
 
 # fig = plt.figure(figsize=(10, 5))
