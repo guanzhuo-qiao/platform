@@ -98,10 +98,10 @@ class Platform:
             print(ic)
             info_coef_res.append(ic)
 
-        fig = plt.figure(figsize=(10, 5))
+        fig = plt.figure(figsize=(15, 5))
 
         # Monotonic Test
-        monotonic_graph = fig.add_subplot(1, 2, 1)
+        monotonic_graph = fig.add_subplot(1, 3, 1)
         monotonic_graph.set_title('Monotonic Test')
         # report_table = gr_arr[::]
         # print(f"ahahha {report_table}")
@@ -116,8 +116,9 @@ class Platform:
             qq = (Q+1).cumprod()
             monotonic_graph.plot(qq,label=f"factor{count}")
         monotonic_graph.legend()
+
         # Distribution Detection
-        distribution_graph = fig.add_subplot(1, 2, 2)
+        distribution_graph = fig.add_subplot(1, 3, 2)
         distribution_graph.set_title('Distribution Detection')
         tmp = np.ravel(np.array(self.factor))
         # remove the influence from NaN
@@ -127,6 +128,18 @@ class Platform:
         bin_width = 1
         nums = int(max(tmp) - min(tmp)) // bin_width
         plt.hist(tmp, nums)
+
+        # Cumulative return
+        cr_graph = fig.add_subplot(1, 3, 3)
+        cr_graph.set_title('Cumulative Return')
+        # ratio = [0, 0.05, 0.15, 0.3, 0.5]
+        ratio = [0.2, 0.2, 0.2, 0.2, 0.2]
+        res = np.zeros(len(gr_arr[0]))
+        for i in range(len(gr_arr)):
+            res += ratio[i] * (gr_arr[i] + 1).cumprod()
+        print(res)
+        cr_graph.plot(res, label='cumulative return')
+        cr_graph.legend()
 
         plt.show()
         return T_test_res, info_ratio_res, Sharpe_ratio_res, info_coef_res
