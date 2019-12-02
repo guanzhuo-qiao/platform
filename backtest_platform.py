@@ -7,14 +7,26 @@ from factor_generator import get_factor_table,factor_function
 
 class Platform:
     def __init__(self, monthly_return_file, quarterly_return_file, factor_dict=None, factor_combined_way=None):
+        """
+        initiate the Platform
 
+        :param monthly_return_file: monthly return DataFrame
+        :param quarterly_return_file: quarterly return DataFrame
+        :param factor_dict: i.e. 1, single factor that don't have the combination function: {"x":"roe"}
+                                 2, multi factors that have the function:
+                                    dictionary = {"x":("free-cash-flow-per-share","factor_financial_ratios"),
+                                                  "y":("net-income-loss","factor_cash_flow_statement")}
+        :param factor_combined_way: a function object
+        """
         self.monthly_return = pd.read_csv(monthly_return_file, index_col=0)
         self.quarterly_return = pd.read_csv(quarterly_return_file, index_col=0)
         self.grouped_return = None
-        if factor_dict:
-            self.factor = get_factor_table(factor_dict["x"])
+        # if factor_dict:
+        #     self.factor = get_factor_table(factor_dict["x"])
         if factor_combined_way:
             self.factor = factor_function(factor_combined_way,factor_dict)
+        else:
+            self.factor = get_factor_table(factor_dict["x"])
 
     def processor(self):
 
@@ -119,30 +131,35 @@ class Platform:
         plt.show()
         return T_test_res, info_ratio_res, Sharpe_ratio_res, info_coef_res
 
-def function_on_factor(x,y,z):
-    return (x+y)/2+z
-# bp = Platform(monthly_return_file='stock_monthly_return.csv',
-#               quarterly_return_file='stock_quarterly_return.csv',
-#               factor_dict={"x":"roe","y":"roa","z":"free-cash-flow-per-share"},
-#               factor_combined_way=function_on_factor)
-# bp.summary(5)
-bp = Platform(monthly_return_file='stock_monthly_return.csv',
-              quarterly_return_file='stock_quarterly_return.csv',
-              factor_dict={"x":"roe"},
-              factor_combined_way=None)
-bp.summary(5)
-# fig = plt.figure(figsize=(10, 5))
-# # Monotonic Test
-# a = [[1,2,3,4,5],
-#      [6,4,7,8,9],
-#      [2,3,3,4,6],
-#      [3,5,6,7,8],
-#      [9,0,8,7,5],
-#      [6,5,6,7,9],
-#      [2,3,4,5,3]]
-# gr_arr = np.array(a).T
-# monotonic_graph = fig.add_subplot(1, 2, 1)
-# monotonic_graph.set_title('Monotonic Test')
+
+
+if __name__=="__main__":
+    def function_on_factor(x,y,z):
+        return (x+y)/2+z
+    bp = Platform(monthly_return_file='stock_monthly_return.csv',
+                  quarterly_return_file='stock_quarterly_return.csv',
+                  factor_dict={"x":("roe","factor_financial_ratios"),
+                               "y":("roa","factor_financial_ratios"),
+                               "z":("free-cash-flow-per-share","factor_financial_ratios")},
+                  factor_combined_way=function_on_factor)
+    bp.summary(5)
+    # bp = Platform(monthly_return_file='stock_monthly_return.csv',
+    #               quarterly_return_file='stock_quarterly_return.csv',
+    #               factor_dict={"x":("roe","factor_financial_ratios")},
+    #               factor_combined_way=None)
+    # bp.summary(5)
+    # fig = plt.figure(figsize=(10, 5))
+    # # Monotonic Test
+    # a = [[1,2,3,4,5],
+    #      [6,4,7,8,9],
+    #      [2,3,3,4,6],
+    #      [3,5,6,7,8],
+    #      [9,0,8,7,5],
+    #      [6,5,6,7,9],
+    #      [2,3,4,5,3]]
+    # gr_arr = np.array(a).T
+    # monotonic_graph = fig.add_subplot(1, 2, 1)
+    # monotonic_graph.set_title('Monotonic Test')
 #
 # for Q in gr_arr:
 #     monotonic_graph.plot(Q)

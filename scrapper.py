@@ -33,11 +33,11 @@ for row in range(len(stock_list)):
     t = "-".join(t.split(" "))
     stock_list.iloc[row, 4] = t
 stock_list.to_csv("stock_list.csv")
-os.chdir(r"D:\Grad3\670\Assignment\platform\factor")
+os.chdir(r"D:\Grad3\670\Assignment\platform\factor_cash_flow_statement")
 for row in range(len(stock_list)):
     symbol = stock_list.iloc[row,0]
     company_name = stock_list.iloc[row, 4]
-    url = f"https://www.macrotrends.net/stocks/charts/{symbol}/{company_name}/financial-ratios?freq=Q"
+    url = f"https://www.macrotrends.net/stocks/charts/{symbol}/{company_name}/cash-flow-statement?freq=Q"
     res = request.urlopen(url)
     if "freq=Q" not in res.url:
         url = res.url+"?freq=Q"
@@ -59,7 +59,7 @@ for row in range(len(stock_list)):
             number = float(ele.split(":")[1].strip("}\"}]")) if ele.split(":")[1].strip("}\"}]") != "" else None
             table_column = ele.split(":")[0].strip("\"")
             table.loc[table_ind,table_column] = number
-    table.to_csv(f"{symbol}_financial_statement.csv")
+    table.to_csv(f"{symbol}_cash_flow_statement.csv")
 
 
 
