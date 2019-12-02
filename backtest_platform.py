@@ -132,10 +132,14 @@ class Platform:
         # Cumulative return
         cr_graph = fig.add_subplot(1, 3, 3)
         cr_graph.set_title('Cumulative Return')
-        # ratio = [0, 0.05, 0.15, 0.3, 0.5]
-        ratio = [0.2, 0.2, 0.2, 0.2, 0.2]
+        ratio = [0, 0.05, 0.15, 0.3, 0.5]
+        # ratio = [0.2, 0.2, 0.2, 0.2, 0.2]
+        # ratio = [0, 0, 0, 0, 0]
+
         res = np.zeros(len(gr_arr[0]))
         for i in range(len(gr_arr)):
+            threshold = np.std(gr_arr[i])
+            gr_arr[i] = np.where(abs(gr_arr[i]) < 2*threshold, gr_arr[i], 0)
             res += ratio[i] * (gr_arr[i] + 1).cumprod()
         print(res)
         cr_graph.plot(res, label='cumulative return')
