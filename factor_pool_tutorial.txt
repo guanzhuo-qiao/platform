@@ -107,3 +107,7 @@ basic-shares-outstanding
 shares-outstanding
 eps-basic-net-earnings-per-share
 eps-earnings-per-share-diluted
+
+(V)
+1, file_path:  platform
+2, keyword: fda
