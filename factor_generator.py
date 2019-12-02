@@ -11,6 +11,10 @@ def get_factor_table(keyword,file_path):
                       i.e. get_factor_table("free-cash-flow-per-share","factor_financial_ratios")
     :return: DataFrame with nan
     """
+    if keyword=="fda" and file_path=="platform":
+        factor_data = pd.read_csv("FDA_factor.csv",index_col=0)
+        return factor_data
+
     stock_data = pd.read_csv("stock_quarterly_return.csv",index_col = 0)
     time_index = stock_data.index
     stock_index = stock_data.columns
@@ -49,6 +53,7 @@ def factor_function(func,factor_dict):
     return func(**inner_dic)
 
 if __name__=="__main__":
+    print(get_factor_table("fda", "platform"))
     print(get_factor_table("free-cash-flow-per-share","factor_financial_ratios"))
     print(get_factor_table("net-income-loss","factor_cash_flow_statement"))
     dictionary = {"x":("free-cash-flow-per-share","factor_financial_ratios"),

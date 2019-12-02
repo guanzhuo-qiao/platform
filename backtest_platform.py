@@ -38,7 +38,7 @@ class Platform:
 
         self.grouped_return = pd.DataFrame(columns=range(N))
         for date, factors in self.factor.iterrows():
-            rank_factor = factors.argsort()/factors.argsort().sum() # transfer to 0-1
+            rank_factor = factors.rank(pct=True,ascending=True) # percentile 0-1
             ticker_list = list(rank_factor.sort_values(ascending=ascending).index)
             members = int(len(ticker_list) / N)
             gr_row = []
