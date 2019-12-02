@@ -9,7 +9,7 @@ def get_factor_table(keyword,file_path):
     :param keyword: the factor name
     :param file_path: the file's name to which the factor you mentioned belongs to.
                       i.e. get_factor_table("free-cash-flow-per-share","factor_financial_ratios")
-    :return: DataFrame with nan
+    :return: DataFrame with 0
     """
     if keyword=="fda" and file_path=="platform":
         factor_data = pd.read_csv("FDA_factor.csv",index_col=0)
