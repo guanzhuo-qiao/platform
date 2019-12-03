@@ -153,7 +153,8 @@ class Platform:
 
 if __name__=="__main__":
     def function_on_factor(x,y,z,m):
-        return x+2*y+2*z+1.7*m
+        return 2*x+1.8*y+3*z+3*m
+        # return 2*x+1.9*y+3*z+3*m
         #return (y+x+z)/m
     bp = Platform(monthly_return_file='stock_monthly_return.csv',
                   quarterly_return_file='stock_quarterly_return.csv',
