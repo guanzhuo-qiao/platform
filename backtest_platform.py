@@ -126,15 +126,15 @@ class Platform:
         # remove the outlier
         tmp = tmp[abs(tmp) < 10]
         bin_width = 1
-        nums = int(max(tmp) - min(tmp)) // bin_width
-        plt.hist(tmp, nums)
+        #nums = int(max(tmp) - min(tmp)) // bin_width
+        plt.hist(tmp,bins="auto",density=True)
 
         # Cumulative return
         cr_graph = fig.add_subplot(1, 3, 3)
         cr_graph.set_title('Cumulative Return')
-        ratio = [0, 0.05, 0.15, 0.3, 0.5]
+        #ratio = [0, 0.05, 0.15, 0.3, 0.5]
         # ratio = [0.2, 0.2, 0.2, 0.2, 0.2]
-        # ratio = [0, 0, 0, 0, 0]
+        ratio = [0, 0, 0, 0, 1]
 
         res = np.zeros(len(gr_arr[0]))
         for i in range(len(gr_arr)):
@@ -143,6 +143,7 @@ class Platform:
             res += ratio[i] * (gr_arr[i] + 1).cumprod()
         print(res)
         cr_graph.plot(res, label='cumulative return')
+        cr_graph.plot(list((self.quarterly_return.iloc[:, -1]+1).cumprod()), label='IMI Health Care')
         cr_graph.legend()
 
         plt.show()
@@ -151,13 +152,15 @@ class Platform:
 
 
 if __name__=="__main__":
-    def function_on_factor(x,y,z):
-        return (x+y)/2+z
+    def function_on_factor(x,y,z,m):
+        return x+2*y+2*z+1.7*m
+        #return (y+x+z)/m
     bp = Platform(monthly_return_file='stock_monthly_return.csv',
                   quarterly_return_file='stock_quarterly_return.csv',
-                  factor_dict={"x":("roe","factor_financial_ratios"),
-                               "y":("roa","factor_financial_ratios"),
-                               "z":("free-cash-flow-per-share","factor_financial_ratios")},
+                  factor_dict={"x":("current-ratio","factor_financial_ratios"),
+                               "y":("roe","factor_financial_ratios"),
+                               "z":("fda","platform"),
+                               "m":("inventory-turnover","factor_financial_ratios")},
                   factor_combined_way=function_on_factor)
     bp.summary(5)
     # bp = Platform(monthly_return_file='stock_monthly_return.csv',

@@ -13,6 +13,7 @@ def get_factor_table(keyword,file_path):
     """
     if keyword=="fda" and file_path=="platform":
         factor_data = pd.read_csv("FDA_factor.csv",index_col=0)
+        factor_data = factor_data.rank(pct=True,ascending=True,axis=1)
         return factor_data
 
     stock_data = pd.read_csv("stock_quarterly_return.csv",index_col = 0)
@@ -30,9 +31,10 @@ def get_factor_table(keyword,file_path):
         except KeyError:
             pass
     path = os.getcwd()
-    path = "/".join(path.split("/")[:-1])   # Here!!!
+    path = "\\".join(path.split("\\")[:-1])   # Here!!!
     os.chdir(path)
     factor_data = factor_data.fillna(0)
+    factor_data = factor_data.rank(pct=True, ascending=True, axis=1)
     return factor_data
 
 
