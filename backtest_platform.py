@@ -49,6 +49,8 @@ class Platform:
                     grouped_tickers = ticker_list[i * members:(i + 1) * members]
                 weighted_return = self.quarterly_return.loc[date, grouped_tickers]@rank_factor[grouped_tickers]/rank_factor[grouped_tickers].sum()
                 gr_row.append(weighted_return)
+            #print(f"group_tickers:{grouped_tickers},"
+            #      f"\nweighted:{list(rank_factor[grouped_tickers]/rank_factor[grouped_tickers].sum())}")
             self.grouped_return = self.grouped_return.append([gr_row], ignore_index=True)
 
     def summary(self, group_num):
@@ -145,15 +147,27 @@ class Platform:
         cr_graph.plot(res, label='cumulative return')
         cr_graph.plot(list((self.quarterly_return.iloc[:, -1]+1).cumprod()), label='IMI Health Care')
         cr_graph.legend()
-
         plt.show()
+
+        benchmark_return = (self.quarterly_return.iloc[:, -1] + 1).cumprod()
+        benchmark_return.index = pd.to_datetime(benchmark_return.index)
+        plt.plot(benchmark_return, label='IMI Health Care')
+        plt.xlabel("time")
+        plt.ylabel("cumulative return")
+        plt.title("Benchmark Return")
+        plt.grid()
+        plt.legend()
+        plt.show()
+
         return T_test_res, info_ratio_res, Sharpe_ratio_res, info_coef_res
 
 
 
 if __name__=="__main__":
-    def function_on_factor(x,y,z,m):
-        return 2*x+1.8*y+3*z+3*m
+    def function_on_factor(x,y,z,m,n,p):
+        #return 10*x+2*y+3*z+3.25*m+3*(n-0.5*p)
+        #return 2.5 * x + 1.5 * y + 2*z + m
+        return 3*x+1.8*y+3*z+3*m
         # return 2*x+1.9*y+3*z+3*m
         #return (y+x+z)/m
     bp = Platform(monthly_return_file='stock_monthly_return.csv',
@@ -161,7 +175,9 @@ if __name__=="__main__":
                   factor_dict={"x":("current-ratio","factor_financial_ratios"),
                                "y":("roe","factor_financial_ratios"),
                                "z":("fda","platform"),
-                               "m":("inventory-turnover","factor_financial_ratios")},
+                               "m":("inventory-turnover","factor_financial_ratios"),
+                               "n":("eps-earnings-per-share-diluted","factor_income_statement"),
+                               "p":("ebit","factor_income_statement")},
                   factor_combined_way=function_on_factor)
     bp.summary(5)
     # bp = Platform(monthly_return_file='stock_monthly_return.csv',

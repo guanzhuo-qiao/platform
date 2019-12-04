@@ -31,7 +31,7 @@ def get_factor_table(keyword,file_path):
         except KeyError:
             pass
     path = os.getcwd()
-    path = "/".join(path.split("/")[:-1])   # Here!!!
+    path = "\\".join(path.split("\\")[:-1])   # Here!!!
     os.chdir(path)
     factor_data = factor_data.fillna(0)
     factor_data = factor_data.rank(pct=True, ascending=True, axis=1)

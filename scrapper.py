@@ -33,7 +33,7 @@ for row in range(len(stock_list)):
     t = "-".join(t.split(" "))
     stock_list.iloc[row, 4] = t
 stock_list.to_csv("stock_list.csv")
-os.chdir(r"D:\Grad3\670\Assignment\platform\factor_cash_flow_statement")
+os.chdir(r"D:\Grad3\670\Assignment\platform\factor_tmp")
 for row in range(len(stock_list)):
     symbol = stock_list.iloc[row,0]
     company_name = stock_list.iloc[row, 4]
